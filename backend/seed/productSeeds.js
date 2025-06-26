@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const mongoose = require('mongoose');
 
-// Sample product data -- to be replaced with actual products
+// Sample product data
 const productSeeds = [
   {
     name: 'iPhone 15 Pro Max',
@@ -37,7 +37,7 @@ const productSeeds = [
     description: 'Immersive 4K TV experience with QLED technology.',
     price: 1499,
     category: 'electronics',
-    image: 'https://cdn.mediamart.vn/images/product/qled-tivi-4k-samsung-65-inch-65q80c-smart-tv_5304e716.png', // Replace with actual image URL
+    image: 'https://cdn.mediamart.vn/images/product/qled-tivi-4k-samsung-65-inch-65q80c-smart-tv_5304e716.png',
     brand: 'Samsung',
     stock: 10,
   },
@@ -100,8 +100,7 @@ const productSeeds = [
     description: 'Sleek and powerful laptop from Microsoft.',
     price: 1299,
     category: 'computers',
-    image:
-      'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4LiXm?ver=45be&q=90&m=6&h=705&w=1253&b=%23FFFFFFFF&f=jpg&o=f&p=140&aim=true',
+    image: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE4LiXm?ver=45be&q=90&m=6&h=705&w=1253&b=%23FFFFFFFF&f=jpg&o=f&p=140&aim=true',
     brand: 'Microsoft',
     stock: 25,
   },
@@ -137,8 +136,7 @@ const productSeeds = [
     description: "Samsung's latest flagship smartphone with S Pen support.",
     price: 1199,
     category: 'electronics',
-    image:
-      'https://i5.walmartimages.com/seo/Samsung-Galaxy-S22-Ultra-5G-SM-S908U1-256GB-Green-US-Model-Factory-Unlocked-Cell-Phone-Very-Good-Condition_0b4b7166-2688-4e0c-954d-539d5ea29ad9.5946110fe2a2c21cda0b256e2969a555.jpeg',
+    image: 'https://i5.walmartimages.com/seo/Samsung-Galaxy-S22-Ultra-5G-SM-S908U1-256GB-Green-US-Model-Factory-Unlocked-Cell-Phone-Very-Good-Condition_0b4b7166-2688-4e0c-954d-539d5ea29ad9.5946110fe2a2c21cda0b256e2969a555.jpeg',
     brand: 'Samsung',
     stock: 30,
   },
@@ -174,8 +172,7 @@ const productSeeds = [
     description: 'Premium over-ear headphones with high-fidelity audio.',
     price: 549,
     category: 'electronics',
-    image:
-      'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/airpods-max-hero-select-202011_FMT_WHH?wid=607&hei=556&fmt=jpeg&qlt=90&.v=1633623988000',
+    image: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/airpods-max-hero-select-202011_FMT_WHH?wid=607&hei=556&fmt=jpeg&qlt=90&.v=1633623988000',
     brand: 'Apple',
     stock: 50,
   },
@@ -209,13 +206,17 @@ const productSeeds = [
 ];
 
 const seedDB = async () => {
-  await Product.deleteMany({});
-  await Product.insertMany(productSeeds);
-  console.log('Products data seeded successfully!');
+  const count = await Product.countDocuments();
+  if (count === 0) {
+    await Product.insertMany(productSeeds);
+    console.log('Products data seeded successfully!');
+  } else {
+    console.log('Products already exist, skipping seeding.');
+  }
 };
 
-// Only runs when the "node productSeeds.js dev" command is executed manually
-if (process.argv[2] == 'dev') {
+// Run manually via CLI
+if (process.argv[2] === 'dev') {
   dotenv.config({ path: path.resolve(__dirname, '../.env') });
   mongoose.connect(process.env.MONGO_URI, {}).then(async () => {
     await seedDB();

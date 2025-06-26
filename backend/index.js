@@ -10,11 +10,10 @@ const checkoutRoutes = require('./routes/checkout');
 const authRoutes = require('./routes/auth');
 const { swaggerUi, swaggerSpec, setupSwaggerUi } = require('./docs/swagger');
 
-// Create Express App
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Database Connection
+// Connect DB
 mongoose
   .connect(process.env.MONGO_URI, {})
   .then(() => console.log('MongoDB Connected'))
@@ -25,12 +24,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Redirect root to /api-docs
+// Redirect to API Docs
 app.get('/', (req, res) => {
   res.redirect('/api-docs');
 });
 
-// Setup Swagger UI with customized title
+// Swagger setup
 setupSwaggerUi(app);
 
 // Routes
@@ -40,9 +39,8 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/auth', authRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Seed database on startup
+// Seed then start
 seedDB().then(() => {
-  // Start Server after seeding
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server ready on port ${PORT}.`);
   });
