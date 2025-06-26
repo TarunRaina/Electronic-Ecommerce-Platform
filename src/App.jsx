@@ -38,8 +38,7 @@ function App() {
   React.useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Be sure to replace the endpoint if your API (backend server) is running on a different port or domain
-        const response = await fetch('https://mern-stack-ecommerce-app-h5wb.onrender.com/api/products');
+        const response = await fetch('https://electronic-ecommerce-platform.onrender.com/api/products');
         const data = await response.json();
         setProducts(data);
       } catch (error) {
@@ -64,25 +63,15 @@ function App() {
         <Container>
           <Routes>
             <Route path="/" element={<Home products={products} loading={loading} addToCart={addToCart} />} />
-
             <Route path="/shop" element={<Shop products={products} addToCart={addToCart} loading={loading} />} />
-
             <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
-
-            <Route path="/checkout" element={<Checkout />} />
-
+            <Route path="/checkout" element={<Checkout cartItems={cart} />} />
             <Route path="/order-success" element={<OrderSuccess />} />
-
             <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
-
             <Route path="/login" element={<Login />} />
-
             <Route path="/register" element={<Register />} />
-
             <Route path="/forgot-password" element={<ForgotPassword />} />
-
             <Route path="/reset-password" element={<ResetPassword />} />
-
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Container>

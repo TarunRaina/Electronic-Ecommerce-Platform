@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CheckoutForm from '../components/CheckoutForm';
 import { Typography, CircularProgress } from '@mui/material';
+import axios from 'axios';
 
 function Checkout({ cartItems }) {
   const navigate = useNavigate();
@@ -13,40 +14,35 @@ function Checkout({ cartItems }) {
     setLoading(true);
 
     try {
-      // Simulate API call to create an order - This is a demo website so we do not have capacity to handle a real order yet
-      // Remember to import axios at the top of the file if you want to use it here
-      // const response = await axios.post('http://localhost:5000/api/checkout/create-order', {
-      //     items: cartItems,
-      //     name: formData.name,
-      //     email: formData.email,
-      //     shippingAddress: formData.shippingAddress,
-      //     cardNumber: formData.cardNumber,
-      //     cardName: formData.cardName,
-      //     expiry: formData.expiry,
-      //     cvc: formData.cvc,
-      // });
+      const token = localStorage.getItem('MERNEcommerceToken') || localStorage.getItem('token'); // depends on your login storage
 
-      // Simulating success
-      setTimeout(() => {
+      const response = await axios.post(
+        'https://electronic-ecommerce-platform.onrender.com/api/checkout/create-order',
+        {
+          userId: 'guest', // Replace with decoded user ID if available
+          items: cartItems || [],
+          totalAmount: (cartItems || []).reduce((acc, item) => acc + item.price, 0),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ? `Bearer ${token}` : '',
+          },
+        }
+      );
+
+      if (response.status === 201) {
         setLoading(false);
         setOrderCreated(true);
         navigate('/order-success');
-      }, 1);
-
-      // Example of handling real response:
-      // if (response.status === 201) {
-      //     setLoading(false);
-      //     setOrderCreated(true);
-      //     navigate('/order-success');
-      // }
-      // else {
-      //     setLoading(false);
-      //     setErrorMessage(response.data.error || 'An error occurred');
-      // }
+      } else {
+        setLoading(false);
+        setErrorMessage(response.data.error || 'Something went wrong during checkout.');
+      }
     } catch (error) {
       console.error('Error creating order:', error);
       setLoading(false);
-      setErrorMessage('An error occurred');
+      setErrorMessage(error.response?.data?.error || 'An error occurred while processing your order.');
     }
   };
 
