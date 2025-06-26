@@ -14,7 +14,7 @@ function ProductDetails({ addToCart }) {
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const response = await axios.get(`https://mern-stack-ecommerce-app-h5wb.onrender.com/api/products/${id}`);
+        const response = await axios.get(`https://electronic-ecommerce-platform.onrender.com/api/products/${id}`);
         if (response.data) {
           setProduct(response.data);
           setUserRating(response.data.rating);
